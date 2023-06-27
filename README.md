@@ -7,15 +7,15 @@ scRNA-seq analysis steps for custom genome reference
 #### check which chromosomes are included in the assembly
 ```ruby
 grep '>ssa\|>MT' Salmo_salar.ICSASG_v2.dna_sm.toplevel.fa 
->ssa01 dna_sm:primary_assembly primary_assembly:ICSASG_v2:ssa01:1:159038749:1 REF
->ssa02 dna_sm:primary_assembly primary_assembly:ICSASG_v2:ssa02:1:72943711:1 REF
-...
-...
->ssa29 dna_sm:primary_assembly primary_assembly:ICSASG_v2:ssa29:1:42488238:1 REF
->MT dna_sm:primary_assembly primary_assembly:ICSASG_v2:MT:1:16665:1 REF
+#>ssa01 dna_sm:primary_assembly primary_assembly:ICSASG_v2:ssa01:1:159038749:1 REF
+#>ssa02 dna_sm:primary_assembly primary_assembly:ICSASG_v2:ssa02:1:72943711:1 REF
+#...
+#...
+#>ssa29 dna_sm:primary_assembly primary_assembly:ICSASG_v2:ssa29:1:42488238:1 REF
+#>MT dna_sm:primary_assembly primary_assembly:ICSASG_v2:MT:1:16665:1 REF
 ```
 #### extract MT sequence using samtools faidx
-```
+```ruby
 samtools faidx Salmo_salar.ICSASG_v2.dna_sm.toplevel.fa
 samtools faidx Salmo_salar.ICSASG_v2.dna_sm.toplevel.fa MT > MT.fa
 
@@ -35,11 +35,11 @@ cut -f1-2 MT.fa.fai
 #### lets first check which chromosomes are included in the assembly
 ```ruby
 grep '>[0-9]\|MT' Salmo_salar.Ssal_v3.1.dna_sm.toplevel.fa 
->1 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:1:1:174498729:1 REF
->2 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:2:1:95481959:1 REF
-...
-...
->29 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:29:1:43051128:1 REF
+#>1 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:1:1:174498729:1 REF
+#>2 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:2:1:95481959:1 REF
+#...
+#...
+#>29 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:29:1:43051128:1 REF
 ```
 We can see that chr are in integer format (this doesn't matter) and MT sequence is missing
 
@@ -56,15 +56,15 @@ cat MT.fa >> ssalar_select.fa
 #### sanity check MT chromosome added to the new assembly
 ```ruby
 grep '>[0-9]\|MT' ssalar_select.fa 
->1 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:1:1:174498729:1 REF
->2 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:2:1:95481959:1 REF
-...
-...
->29 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:29:1:43051128:1 REF
->MT dna_sm:primary_assembly primary_assembly:ICSASG_v2:MT:1:16665:1 REF
+#>1 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:1:1:174498729:1 REF
+#>2 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:2:1:95481959:1 REF
+#...
+#...
+#>29 dna_sm:primary_assembly primary_assembly:Ssal_v3.1:29:1:43051128:1 REF
+#>MT dna_sm:primary_assembly primary_assembly:ICSASG_v2:MT:1:16665:1 REF
 ```
 ## 2: similarly, need to extract MT genes from old gtf file and append to new(er) gtf
-```
+```ruby
 # extract MT genes
 cat Salmo_salar.ICSASG_v2.105.gtf | awk '($1 == "MT") {print $0}' > MT.gtf
 
@@ -73,10 +73,10 @@ cat MT.gtf >> Salmo_salar.Ssal_v3.1.108.gtf
 
 # sanity check
 grep 'MT' Salmo_salar.Ssal_v3.1.108.gtf
-MT	RefSeq	gene	1007	1074	.	+	.	gene_id "ENSSSAG00000000002"; gene_version "1"; gene_source "RefSeq"; gene_biotype "Mt_tRNA";
-MT	RefSeq	transcript	1007	1074	.	+	.	gene_id "ENSSSAG00000000002"; gene_version "1"; transcript_id "ENSSSAT00000000002"; transcript_version "1"; gene_source "RefSeq"; gene_biotype "Mt_tRNA"; transcript_source "RefSeq"; transcript_biotype "Mt_tRNA";
-...
-...
+#MT	RefSeq	gene	1007	1074	.	+	.	gene_id "ENSSSAG00000000002"; gene_version "1"; gene_source "RefSeq"; gene_biotype "Mt_tRNA";
+#MT	RefSeq	transcript	1007	1074	.	+	.	gene_id "ENSSSAG00000000002"; gene_version "1"; transcript_id "ENSSSAT00000000002"; transcript_version "1"; gene_source "RefSeq"; gene_biotype "Mt_tRNA"; transcript_source "RefSeq"; transcript_biotype "Mt_tRNA";
+#...
+#...
 
 # save as new file name to reflect MT changes
 cp Salmo_salar.Ssal_v3.1.108.gtf ssalar_MT.gtf
